@@ -1,2 +1,2 @@
 # DCT
-The Digital Cosine Transform
+An implementation of the Digital Cosine 2D Transform

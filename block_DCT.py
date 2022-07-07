@@ -5,7 +5,9 @@ import sys
 HOME = os.environ['HOME']
 sys.path.insert(1, HOME + "/repos/scalar_quantization")
 import quantization
-import deadzone_quantization as quantizer
+#import deadzone_quantization as quantizer
+from deadzone_quantization import Deadzone_Quantizer as Quantizer
+sys.path.insert(1, HOME + "/repos/information_theory")
 import information
 import distortion
 
@@ -128,7 +130,7 @@ block-components.'''
                 subband_component = decomposition[y*blocks_in_y:(y+1)*blocks_in_y,
                                                   x*blocks_in_x:(x+1)*blocks_in_x,
                                                   c]
-                Q = quantizer(Q_step=Q_steps[y, x, c])
+                Q = Quantizer(Q_step=Q_steps[y, x, c])
                 quantized_subband_component = Q.quantize(subband_component)
                 quantized_decomposition[y*blocks_in_y:(y+1)*blocks_in_y,
                                         x*blocks_in_x:(x+1)*blocks_in_x,
@@ -161,7 +163,7 @@ quantization steps.
                 quantized_subband_component = quantized_decomposition[y*blocks_in_y:(y+1)*blocks_in_y,
                                                                       x*blocks_in_x:(x+1)*blocks_in_x,
                                                                       c]
-                Q = quantizer(Q_step=Q_steps[y, x, c])
+                Q = Quantizer(Q_step=Q_steps[y, x, c])
                 dequantized_subband_component = Q.dequantize(quantized_subband_component)
                 dequantized_decomposition[y*blocks_in_y:(y+1)*blocks_in_y,
                                           x*blocks_in_x:(x+1)*blocks_in_x,

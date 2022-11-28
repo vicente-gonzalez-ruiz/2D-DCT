@@ -11,6 +11,15 @@ sys.path.insert(1, HOME + "/repos/information_theory")
 import information
 import distortion
 
+import logging
+logger = logging.getLogger(__name__)
+#logging.basicConfig(format="[%(filename)s:%(lineno)s %(funcName)s()] %(message)s")
+#logger.setLevel(logging.CRITICAL)
+#logger.setLevel(logging.ERROR)
+logger.setLevel(logging.WARNING)
+#logger.setLevel(logging.INFO)
+#logger.setLevel(logging.DEBUG)
+
 def analyze_block(block):
     '''(Forward) DCT block transform.'''
     return scipy.fftpack.dct(scipy.fftpack.dct(block, norm="ortho", axis=0), norm="ortho", axis=1)
@@ -235,7 +244,7 @@ false, and viceversa.
     blocks_in_x = decomposition.shape[1]//block_x_side
 
     for y in range(block_y_side):
-        print(f"{y}/{block_y_side-1}", end=' ')
+        logger.info(f"{y}/{block_y_side-1}", end=' ')
         for x in range(block_x_side):
             while slopes[y, x] > target_slope:
                 new_Q_step= Q_steps[y,x] - 1
@@ -294,7 +303,7 @@ condition is false, and viceversa. The <image> is not quantized.
     # Adjust the quantization step of those blocks with a slope
     # different to <median_slope>.
     for y in range(blocks_in_y):
-        print(f"{y}/{blocks_in_y-1}", end=' ')
+        logger.info(f"{y}/{blocks_in_y-1}", end=' ')
         for x in range(blocks_in_x):
             while slopes[y,x] > target_slope:
                 new_Q_step = Q_steps[y,x] - 1

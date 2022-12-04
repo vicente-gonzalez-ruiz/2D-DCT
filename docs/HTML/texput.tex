@@ -67,7 +67,7 @@ $\cdot^{\text T}$ denotes the transpose of ${\mathbf K}$.
 
 \subsection{The $\text{RGB}$-DCT}
 
-The $\text{RGB}$-DCT is a DCT applied to a vector of $3$ elements (in
+The $\text{RGB}$-DCT is a \href{https://en.wikipedia.org/wiki/Discrete_cosine_transform}{DCT} applied to a vector of $3$ elements (in
 our case, a $\text{RGB}$ pixel) defined by
 \begin{equation}
   \begin{bmatrix}
@@ -109,6 +109,37 @@ and the inverse transform by
 See this
 \href{https://github.com/Sistemas-Multimedia/Sistemas-Multimedia.github.io/blob/master/milestones/06-YUV_compression/color-DCT_matrix.ipynb}{notebook}
 to see how to compute the filter's coefficients.
+
+\begin{comment}
+For example, the
+2x2-\href{https://en.wikipedia.org/wiki/Karhunen-Loeve_theorem}{KLT}~\cite{sayood2017introduction}
+is defined by
+\begin{equation}
+  \begin{bmatrix}
+    {\mathbf{y}}_0 \\
+    {\mathbf{y}}_1
+  \end{bmatrix}
+  = 
+  \begin{bmatrix} \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\ \frac{1}{\sqrt{2}} & \frac{-1}{\sqrt{2}} \end{bmatrix}
+  \begin{bmatrix}
+    {\mathbf{x}}_0 \\
+    {\mathbf{x}}_1
+  \end{bmatrix},
+  \label{eq:KLT_transform}
+\end{equation}
+and it holds that
+\begin{equation}
+  \mathbf{K}={\mathbf{K}}^{-1}={\mathbf{K}}^{\text T},
+  \label{eq:orthogonal_matrix}
+\end{equation}
+where ${\mathbf{K}}^{\text T}$ represents the transpose matrix of
+$\mathbf{K}$.  Eq.~\ref{eq:orthogonal_matrix} is true for all
+\href{https://en.wikipedia.org/wiki/Orthogonality}{orthogonal}
+transforms, and therefore
+\begin{equation}
+  \langle {\mathbf{K}}_i, {\mathbf{K}}_j\rangle = 0, \forall i\neq j.
+\end{equation}
+\end{comment}
 
 When applied to the $\text{RGB}$ color domain, we will move from this
 domain to the color-DCT domain that have also 3 components, that we

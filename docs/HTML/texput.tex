@@ -91,10 +91,12 @@ equal to 1, and also that the quantization error is \emph{amplified}
 with the same gain in all the subbands. However, this does not mean
 that all the subbands should be quantized using the same $\Delta$,
 because some subbands can be compressed more efficienly than others
-and their distortion (after quantization) can be different. This
-\href{https://github.com/Sistemas-Multimedia/Sistemas-Multimedia.github.io/blob/master/milestones/07-DCT/block_DCT_compression.ipynb}{notebook}
-shows how to use RD optimization to determine, given a target
-bit-rate, the best combination of quantization steps per subbands.
+and their distortion (after quantization) can be different. The
+notebook
+\href{https://github.com/vicente-gonzalez-ruiz/color_transforms/blob/main/docs/3DCT/notebooks/3DCT_over_RGB.ipynb}{Removing
+  RGB redundancy with the 3-Channels DCT} shows how to use RD
+optimization to determine, given a target bit-rate, the best
+combination of quantization steps per subbands.
 
 \section{References}
 

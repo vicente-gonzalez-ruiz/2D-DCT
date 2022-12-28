@@ -1,1 +1,2 @@
-[Block-based Discrete Cosine Transform](http://vicente-gonzalez-ruiz.github.io/DCT/docs/).
+[DCT](http://vicente-gonzalez-ruiz.github.io/DCT/docs/)
+An implementation of the block-based Discrete Cosine Transform.

@@ -3,12 +3,12 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "DCT"
+name = "DCT2D"
 version = "0.0.1"
 authors = [
   { name="Vicente González Ruiz", email="vicente.gonzalez.ruiz@gmail.com" },
 ]
-description = "2D-DCT (Discrete Cosine Transform)"
+description = "2 Dimensional DCT (Discrete Cosine Transform)"
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
@@ -18,5 +18,5 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/vicente-gonzalez-ruiz/DCWT"
-"Bug Tracker" = "https://github.com/vicente-gonzalez-ruiz/DCT/issues"
+"Homepage" = "https://github.com/vicente-gonzalez-ruiz/DCT2D"
+"Bug Tracker" = "https://github.com/vicente-gonzalez-ruiz/DCT2D/issues"

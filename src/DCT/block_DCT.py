@@ -1,15 +1,18 @@
+'''Block-based 2D-DCT.'''
+
 import numpy as np
 import scipy.fftpack
 import os
 import sys
-HOME = os.environ['HOME']
-sys.path.insert(1, HOME + "/repos/scalar_quantization")
-import quantization
+#HOME = os.environ['HOME']
+#sys.path.insert(1, HOME + "/repos/scalar_quantization")
+#import quantization
 #import deadzone_quantization as quantizer
-from deadzone_quantization import Deadzone_Quantizer as Quantizer
-sys.path.insert(1, HOME + "/repos/information_theory")
-import information
-import distortion
+#from deadzone_quantization import Deadzone_Quantizer as Quantizer
+from scalar_quantization.deadzone_quantization import Deadzone_Quantizer as Quantizer
+#sys.path.insert(1, HOME + "/repos/information_theory")
+from information_theory import information
+from information_theory import distortion
 
 import logging
 logger = logging.getLogger(__name__)
@@ -140,7 +143,7 @@ block-components.'''
                                                   x*blocks_in_x:(x+1)*blocks_in_x,
                                                   c]
                 Q = Quantizer(Q_step=Q_steps[y, x, c])
-                quantized_subband_component = Q.quantize(subband_component)
+                quantized_subband_component = Q.encode(subband_component)
                 quantized_decomposition[y*blocks_in_y:(y+1)*blocks_in_y,
                                         x*blocks_in_x:(x+1)*blocks_in_x,
                                         c] = quantized_subband_component
@@ -173,7 +176,7 @@ quantization steps.
                                                                       x*blocks_in_x:(x+1)*blocks_in_x,
                                                                       c]
                 Q = Quantizer(Q_step=Q_steps[y, x, c])
-                dequantized_subband_component = Q.dequantize(quantized_subband_component)
+                dequantized_subband_component = Q.decode(quantized_subband_component)
                 dequantized_decomposition[y*blocks_in_y:(y+1)*blocks_in_y,
                                           x*blocks_in_x:(x+1)*blocks_in_x,
                                           c] = dequantized_subband_component
@@ -218,8 +221,8 @@ each subband.
             subband = decomposition[y*blocks_in_y:(y+1)*blocks_in_y,
                                     x*blocks_in_x:(x+1)*blocks_in_x]
             RD_point_for_Q_step_one = (information.entropy(subband.flatten().astype(np.int16)), 0)
-            quantized_subband = Q.quantize(subband, Q_step)
-            dequantized_subband = Q.dequantize(quantized_subband, Q_step)
+            quantized_subband = Q.encode(subband, Q_step)
+            dequantized_subband = Q.decode(quantized_subband, Q_step)
             current_RD_point = (information.entropy(quantized_subband.flatten()), distortion.MSE(subband, dequantized_subband))
             if (RD_point_for_Q_step_one[0] - current_RD_point[0]) == 0:
                 slopes[y, x] = 0
@@ -253,8 +256,8 @@ false, and viceversa.
                 subband = decomposition[y*blocks_in_y:(y+1)*blocks_in_y,
                                         x*blocks_in_x:(x+1)*blocks_in_x]
                 RD_point_for_Q_step_one = (information.entropy(subband.flatten().astype(np.int16)), 0)
-                quantized_subband = Q.quantize(subband, new_Q_step)
-                dequantized_subband = Q.dequantize(quantized_subband, new_Q_step)
+                quantized_subband = Q.encode(subband, new_Q_step)
+                dequantized_subband = Q.decode(quantized_subband, new_Q_step)
                 # Remember that the DCT is orthonormal, i.e., energy
                 # preserving
                 current_RD_point = (information.entropy(quantized_subband.flatten()), distortion.MSE(subband, dequantized_subband))
@@ -272,8 +275,8 @@ false, and viceversa.
                 subband = decomposition[y*blocks_in_y:(y+1)*blocks_in_y,
                                         x*blocks_in_x:(x+1)*blocks_in_x]
                 RD_point_for_Q_step_one = (information.entropy(subband.flatten().astype(np.int16)), 0)
-                quantized_subband = Q.quantize(subband, new_Q_step)
-                dequantized_subband = Q.dequantize(quantized_subband, new_Q_step)
+                quantized_subband = Q.encode(subband, new_Q_step)
+                dequantized_subband = Q.decode(quantized_subband, new_Q_step)
                 current_RD_point = (information.entropy(quantized_subband.flatten()), distortion.MSE(subband, dequantized_subband))
                 current_slope = slopes[y,x]
                 if (RD_point_for_Q_step_one[0] - current_RD_point[0]) == 0:
@@ -285,7 +288,7 @@ false, and viceversa.
                 Q_steps[y,x] = new_Q_step
     return Q_steps, slopes
 
-##########################33
+##########################
 
 def _find_optimal_Q_steps(image_DCT, block_y_side, block_x_side, Q_steps, current_slopes, target_slope):
     '''Quantize the DCT <image> using a quantization step (to compute)
@@ -313,8 +316,8 @@ condition is false, and viceversa. The <image> is not quantized.
                                       x*block_x_side:(x+1)*block_x_side]
                 #block_DCT = block_analyze(block)
                 RD_point_for_Q_step_one = (information.entropy(block_DCT.flatten().astype(np.int16)), 0)
-                quantized_block_DCT = Q.quantize(block_DCT, new_Q_step)
-                dequantized_block_DCT = Q.dequantize(quantized_block_DCT, new_Q_step)
+                quantized_block_DCT = Q.encode(block_DCT, new_Q_step)
+                dequantized_block_DCT = Q.decode(quantized_block_DCT, new_Q_step)
                 #dequantized_block = block_synthesize(dequantized_block_DCT)
                 current_RD_point = (information.entropy(quantized_block_DCT.flatten()), distortion.MSE(block_DCT, dequantized_block_DCT))
                 current_slope = slopes[y,x]
@@ -334,8 +337,8 @@ condition is false, and viceversa. The <image> is not quantized.
                                       x*block_x_side:(x+1)*block_x_side]
                 #block_DCT = block_analyze(block)
                 RD_point_for_Q_step_one = (information.entropy(block_DCT.flatten().astype(np.int16)), 0)
-                quantized_block_DCT = Q.quantize(block_DCT, new_Q_step)
-                dequantized_block_DCT = Q.dequantize(quantized_block_DCT, new_Q_step)
+                quantized_block_DCT = Q.encode(block_DCT, new_Q_step)
+                dequantized_block_DCT = Q.decode(quantized_block_DCT, new_Q_step)
                 #dequantized_block = block_synthesize(dequantized_block_DCT)
                 current_RD_point = (information.entropy(quantized_block_DCT.flatten()), distortion.MSE(block_DCT, dequantized_block_DCT))
                 current_slope = slopes[y,x]

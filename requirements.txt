@@ -1,4 +1,4 @@
 numpy
 opencv-python
 scalar_quantization @ git+https://github.com/vicente-gonzalez-ruiz/scalar_quantization@master#egg=scalar_quantization
-
+information_theory @ git+https://github.com/vicente-gonzalez-ruiz/information_theory

@@ -1,4 +1,4 @@
-'''Block-based 2D-DCT.'''
+'''Block-based 2D-DCT. The image must be a multiple of the block size.'''
 
 import numpy as np
 import scipy.fftpack
@@ -62,32 +62,39 @@ def synthesize_image(image_DCT, block_y_side, block_x_side):
 
 def get_subbands(image_DCT, block_y_side, block_x_side):
     '''Returns the subband form of <image_DCT> (a decomposition). Notice
-that a subband is form by the coefficients that are in the same
-position in each block of <image_DCT>.
-
+    that a subband is formed by the coefficients that are in the same
+    position in each block of <image_DCT>.
     '''
-    blocks_in_y = image_DCT.shape[0]//block_y_side
-    blocks_in_x = image_DCT.shape[1]//block_x_side    
+    blocks_in_y = image_DCT.shape[0] // block_y_side
+    blocks_in_x = image_DCT.shape[1] // block_x_side
     decomposition = np.empty_like(image_DCT)
+
     for y in range(block_y_side):
         for x in range(block_x_side):
-            decomposition[y*blocks_in_y:(y+1)*blocks_in_y,
-                          x*blocks_in_x:(x+1)*blocks_in_x] = image_DCT[y::block_y_side, x::block_x_side]
+            subband = image_DCT[y::block_y_side, x::block_x_side]
+            target_height = subband.shape[0]
+            target_width = subband.shape[1]
+            decomposition[y * blocks_in_y:y * blocks_in_y + target_height,
+                          x * blocks_in_x:x * blocks_in_x + target_width] = subband
+
     return decomposition
 
 def get_blocks(decomposition, block_y_side, block_x_side):
     '''Returns the block form of <decomposition> (a DCT-ed image by
-blocks). Notice that each block is form the the coefficients that are
-in the same position of each subband of the input decomposition.
-
+    blocks). Notice that each block is formed by the coefficients
+    that are in the same position of each subband of the input decomposition.
     '''
-    blocks_in_y = decomposition.shape[0]//block_y_side
-    blocks_in_x = decomposition.shape[1]//block_x_side    
+    blocks_in_y = decomposition.shape[0] // block_y_side
+    blocks_in_x = decomposition.shape[1] // block_x_side
     image_DCT = np.empty_like(decomposition)
+    print(blocks_in_y, blocks_in_x)
+
     for y in range(block_y_side):
         for x in range(block_x_side):
-            image_DCT[y::block_y_side, x::block_x_side] = decomposition[y*blocks_in_y:(y+1)*blocks_in_y,
-                                                                        x*blocks_in_x:(x+1)*blocks_in_x]
+            subband = decomposition[y * blocks_in_y:(y + 1) * blocks_in_y,
+                                     x * blocks_in_x:(x + 1) * blocks_in_x]
+            image_DCT[y::block_y_side, x::block_x_side] = subband
+
     return image_DCT
 
 def _compute_variances(image_DCT, block_y_side, block_x_side):
